@@ -4,37 +4,27 @@ from requests.auth import HTTPBasicAuth
 import requests
 from optparse import OptionParser
 
-
 def subiterator(substats, master=False):
-    """ Second level of iterator, based on use or not of group in parameters"""
-    for subkey, subvalue in substats.iteritems():
-        for key, value in subvalue.iteritems():
-            if not key == "description":
-                if not master:
-                    try:
-                        print ("%s_%s:%s " % (
-                            subkey, key, int(value)),
-                             end=''
-                             )
-                    except:
-                        print ("%s_%s:%s " % (subkey, key, value), end='')
-                else:
-                    try:
-                        print ("%s_%s_%s:%s " % (
-                            master, subkey, key, int(value)),
-                            end=''
-                            )
-                    except:
-                        print ("%s_%s_%s:%s " %
-                            (master, subkey, key, value),
-                            end=''
-                            )
-
+    if type(substats) is dict:
+        for subkey, subvalue in substats.iteritems():
+            subiterator(subvalue, (master + "_" + subkey) if master else subkey)
+    else:
+        try:
+            print ("%s:%s " % (
+                master, int(substats)),
+                end=''
+                )
+        except:
+            print
 
 def iterator(options, stats):
     """ Iterate over the server response """
-    if options.group:
+    if options.group == "couchdb":
+        subiterator(stats)
+
+    elif options.group:
         subiterator(stats[options.group])
+
     else:
         for master, subdict in stats.iteritems():
             subiterator(subdict, master)
@@ -44,11 +34,11 @@ def connToDb(options):
     """ Craft the db connection url based on options"""
     if options.username and options.password:
         r = requests.get(''.join(('http://', options.hostname,
-                        ':', options.port, '/_stats')),
+                        ':', options.port, '/_node/_local/_stats/couchdb')),
                         auth=HTTPBasicAuth(options.username, options.password))
     else:
         r = requests.get(''.join(('http://', options.hostname,
-                        ':', options.port, '/_stats')))
+                        ':', options.port, '/_node/_local/_stats/couchdb')))
     # check if the response was valid
     if r.status_code != 200:
         raise Exception("connection failed. response: %s" % r.text)
