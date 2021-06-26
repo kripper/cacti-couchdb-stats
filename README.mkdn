@@ -1,15 +1,27 @@
-# Couchdb Stats Parser
+# CouchDB Stats for Cacti
+
+This is an updated version of [reiven's Cacti template](https://forums.cacti.net/viewtopic.php?t=49969) that now supports CouchDB 3.1 and Cacti 1.2.14.
+
+## Installation
+
+1. Import [Cacti template](https://raw.githubusercontent.com/kripper/python-couchdb-stats/master/cacti_host_template_couchdb_server.xml) using the option in [Cacti > Console > Import/Export > Import Templates]
+2. Copy the [Stats Parser script](https://raw.githubusercontent.com/kripper/python-couchdb-stats/master/couchdb_stats.py) into your `{cacti_location}/scripts/` folder.
+3. When creating the graph in Cacti, you will need to provide 3 (unnamed!) custom fields:
+    * CouchDB port (normally 5984)
+    * CouchDB user
+    * CouchDB password.
+
+# CouchDB Stats Parser
 
 ## Description
-A simple python-powered Couchdb Runtime Statistics Parser, to be used on monitoring/metrics.
-
-See the [Official Documentation](http://wiki.apache.org/couchdb/Runtime_Statistics)
-
+This is a very simple python script that parses the [CouchDB stats JSON] (https://docs.couchdb.org/en/latest/api/server/common.html#node-node-name-stats) and outputs a format supported by Cacti.
 
 ## Python libraries needed
 [Requests](http://docs.python-requests.org/en/latest)
 
 ## Usage
+This script will be executed directly by the Cacti template, but you can also use it via console for testing purposes.
+
     couchdb_stats.py [-H hostname] [-P port]
 
     Options:
@@ -20,10 +32,4 @@ See the [Official Documentation](http://wiki.apache.org/couchdb/Runtime_Statisti
     -g GROUP, --group=GROUP  Group (httpd/couchdb) [optional]
 
 ## License
-This package is distributed under BSD License. See also [LICENSE](https://github.com/reiven/python-couchdb-stats/blob/master/LICENSE)  
-
-
-
-----------------------------------------------------------------
-For bug report, feedback, or any other reasons:
-Federico Reiven < reiven AT gmail DOT com >
+This package is distributed under BSD License. See also [LICENSE](https://github.com/reiven/python-couchdb-stats/blob/master/LICENSE)
